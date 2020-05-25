@@ -43,7 +43,6 @@ class CartScreen extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-
                       // Menambahkan items Chart ke Orders
                       Provider.of<OrdersProvider>(context).addOrder(
                         chartObject.items.values.toList(),
@@ -94,6 +93,28 @@ class CartScreen extends StatelessWidget {
                   ),
                   onDismissed: (direction) {
                     chartObject.removeItem(productId);
+                  },
+                  confirmDismiss: (direction) {
+
+                    // Alert Dialog
+                    return showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text('Anda Yakin?'),
+                        content: Text('Anda yakin menghapus cart ini?'),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () => Navigator.of(ctx).pop(false),
+                            child: Text('Tidak'),
+                          ),
+                          FlatButton(
+                            onPressed: () => Navigator.of(ctx).pop(true),
+                            child: Text('Ya'),
+                          ),
+                        ],
+                      ),
+                    );
+                    
                   },
                   child: ChartItemWidget.ChartItem(
                     id: chartId,
