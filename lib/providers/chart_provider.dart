@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shop/providers/product.dart';
+import 'package:shop/widgets/chart_item.dart';
 
 class ChartItem {
   final String id;
@@ -23,7 +24,7 @@ class ChartProvider with ChangeNotifier {
   }
 
   int get totalChart {
-    return _items != null ? _items.length : 0; 
+    return _items != null ? _items.length : 0;
   }
 
   void addChart(String productId, double price, String title) {
@@ -49,24 +50,43 @@ class ChartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   double get totalPrice {
     double total = 0.0;
-    _items.forEach((key, chartItem){
+    _items.forEach((key, chartItem) {
       total += chartItem.price * chartItem.quantity;
     });
     return total;
   }
 
-  void removeItem(String productId){
+  void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
   }
 
-
-  void clear(){
+  void clear() {
     _items = {};
     notifyListeners();
   }
+  
 
+  void removeSingleItem(String productId) {
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+
+    if (_items[productId].quantity > 1) {
+      _items.update(
+        productId,
+        (currentItem) => ChartItem(
+          id: currentItem.id,
+          price: currentItem.price,
+          title: currentItem.title,
+          quantity: currentItem.quantity - 1,
+        ),
+      );
+    }else{
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
 }

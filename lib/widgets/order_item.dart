@@ -38,6 +38,8 @@ class _OrderItemState extends State<OrderItem> {
               },
             ),
           ),
+
+          // Detail Product in cart
           if (isExpanded)
             Container(
               padding: EdgeInsets.only(left: 30),
@@ -60,6 +62,8 @@ class _OrderItemState extends State<OrderItem> {
                 },
               ),
             ),
+
+
         ],
       ),
     );

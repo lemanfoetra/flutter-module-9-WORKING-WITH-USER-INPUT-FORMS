@@ -56,14 +56,36 @@ class ProductItem extends StatelessWidget {
             footer: GridTileBar(
               backgroundColor: Colors.black26,
               leading: IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.yellow,
-                  ),
-                  onPressed: () {
-                    dataChart.addChart(
-                        dataProduct.id, dataProduct.price, dataProduct.title);
-                  }),
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.yellow,
+                ),
+                onPressed: () {
+                  dataChart.addChart(
+                    dataProduct.id,
+                    dataProduct.price,
+                    dataProduct.title,
+                  );
+
+                  // Menghide snakbar yang sebelumnya aktif
+                  Scaffold.of(context).hideCurrentSnackBar();
+
+                  // Menampilkan Snackbar ketika produk berhasil di tambahkan ke cart
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Produk ditambahkan!'),
+                      duration: Duration(seconds: 3),
+                      action: SnackBarAction(
+                        textColor: Colors.red,
+                        label: 'UNDO',
+                        onPressed: () {
+                          dataChart.removeSingleItem(dataProduct.id);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
               title: Text(
                 dataProduct.title,
               ),
