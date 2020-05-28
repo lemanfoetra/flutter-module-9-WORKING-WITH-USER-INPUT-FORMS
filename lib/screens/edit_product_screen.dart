@@ -23,7 +23,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: "Title"),
                 textInputAction: TextInputAction.next,
-              )
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: "Price"),
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.number,  // Untuk meng set type Input keyboard
+              ),
             ],
           ),
         )
