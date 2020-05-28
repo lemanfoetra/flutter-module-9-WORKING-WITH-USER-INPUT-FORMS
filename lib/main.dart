@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './screens/edit_product_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/order_screen.dart';
 import './screens/user_product_screen.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreeen.routeName: (ctx) => OrdersScreeen(),
           UserProductsScreen.routeName : (ctx) => UserProductsScreen(),
+          EditProductScreen.routeName : (ctx) => EditProductScreen(),
         },
         onUnknownRoute: (setting) {
           return MaterialPageRoute(
