@@ -10,6 +10,20 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreenState extends State<EditProductScreen> {
 
   final _focusPrice = FocusNode();
+  final _focusNodeDescription = FocusNode();
+
+
+  // dispose() dijalankan ketika state widget dihancurkan
+  @override
+  void dispose() {
+    
+    // focus node dihancurkan agar tidak terjadi kebocoran memmory
+    _focusPrice.dispose();
+    _focusNodeDescription.dispose();
+
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +37,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+
+              // untuk title
               TextFormField(
                 decoration: InputDecoration(labelText: "Title"),
                 textInputAction: TextInputAction.next,
@@ -32,11 +48,24 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   FocusScope.of(context).requestFocus(_focusPrice);
                 },
               ),
+
+              // untuk price (harga)
               TextFormField(
                 decoration: InputDecoration(labelText: "Price"),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,  // Untuk meng set type Input keyboard
                 focusNode: _focusPrice,
+                 onFieldSubmitted: (_){
+                  FocusScope.of(context).requestFocus(_focusNodeDescription);
+                },
+              ),
+
+              // unutk deskripsi
+              TextFormField(
+                decoration: InputDecoration(labelText: "Description"),
+                keyboardType: TextInputType.multiline,
+                maxLines: 3,       // berarti 3 baris
+                focusNode: _focusNodeDescription,
               ),
             ],
           ),
