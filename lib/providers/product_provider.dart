@@ -41,22 +41,27 @@ class ProductsProvider with ChangeNotifier {
     return [..._items];
   }
 
-
   List<Product> get getFavoriteItems {
-    return [..._items.where((data)=> data.isFavorite == true)];
+    return [..._items.where((data) => data.isFavorite == true)];
   }
 
 
-  void addProduct() {
-    
+  void addProduct(Product product) {
+    Product _newProduct = Product(
+      id: DateTime.now().toString(),
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+    );
+    // Insert sebagai list pertama
+    _items.insert(0, _newProduct);
+
     //BERFUNGSI UNTUK MEMBERITAHUKAN BAHWA ADA DATA BARU SEHINGGA WIDGET AKAN DI RE-RENDER
-    notifyListeners(); 
+    notifyListeners();
   }
 
-
-  Product findById(String id){
+  Product findById(String id) {
     return items.firstWhere((data) => data.id == id);
   }
-
-
 }
