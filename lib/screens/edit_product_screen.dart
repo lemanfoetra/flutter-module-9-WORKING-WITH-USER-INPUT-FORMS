@@ -9,6 +9,8 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
+
+  // buat form key agar form diketahui flutter
   final _formKey = GlobalKey<FormState>();
   final _focusPrice = FocusNode();
   final _focusNodeDescription = FocusNode();
@@ -24,6 +26,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   // untuk validate dan simpan data dari form
   void _simpanForm() {
+
+    // untuk menyimpan form
     _formKey.currentState.save();
 
     _productData = Product(
@@ -91,7 +95,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_focusPrice);
                   },
-                  onSaved: (value) {
+                  // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
+                  onSaved: (value) { 
                     _title = value;
                   },
                 ),
@@ -106,6 +111,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_focusNodeDescription);
                   },
+                  // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                   onSaved: (value) {
                     _price = double.parse(value);
                   },
@@ -117,6 +123,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 3, // berarti 3 baris
                   focusNode: _focusNodeDescription,
+                  // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                   onSaved: (value) {
                     _description = value;
                   },
@@ -169,6 +176,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             }
                           });
                         },
+                        // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                         onSaved: (value) {
                           _imgUrl = value;
                         },
