@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../providers/product.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -8,11 +9,48 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _focusPrice = FocusNode();
   final _focusNodeDescription = FocusNode();
   final _imgUrlController = TextEditingController();
 
+  String _title;
+  String _description;
+  double _price;
+  String _imgUrl;
+
   bool isInputUrlImage = false;
+  Product _productData ;
+
+  // untuk validate dan simpan data dari form
+  void _simpanForm() {
+    _formKey.currentState.save();
+
+    _productData = Product(
+      id: null,
+      title: _title,
+      description: _description,
+      price: _price,
+      imageUrl: _imgUrl,
+    );
+
+    print(_productData.title);
+    print(_productData.price);
+    print(_productData.description);
+    print(_productData.imageUrl);
+  }
+
+  // ketika melaod image
+  Widget _onLoadImage(loadingProgress) {
+    return Center(
+      child: CircularProgressIndicator(
+        value: loadingProgress.expectedTotalBytes != null
+            ? loadingProgress.cumulativeBytesLoaded /
+                loadingProgress.expectedTotalBytes
+            : null,
+      ),
+    );
+  }
 
   // dispose() dijalankan ketika state widget dihancurkan
   @override
@@ -30,8 +68,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () => _simpanForm(),
+          ),
+        ],
       ),
       body: Form(
+        key: _formKey,
         child: Padding(
           padding: EdgeInsets.all(8),
           child: SingleChildScrollView(
@@ -46,6 +91,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_focusPrice);
                   },
+                  onSaved: (value) {
+                    _title = value;
+                  },
                 ),
 
                 // untuk price (harga)
@@ -58,6 +106,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_focusNodeDescription);
                   },
+                  onSaved: (value) {
+                    _price = double.parse(value);
+                  },
                 ),
 
                 // unutk deskripsi
@@ -66,6 +117,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 3, // berarti 3 baris
                   focusNode: _focusNodeDescription,
+                  onSaved: (value) {
+                    _description = value;
+                  },
                 ),
 
                 // untuk gambar
@@ -95,15 +149,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 if (loadingProgress == null) {
                                   return child;
                                 } else {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress.expectedTotalBytes != null
-                                          ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
-                                          : null,
-                                    ),
-                                  );
+                                  return _onLoadImage(loadingProgress);
                                 }
-                                
                               },
                             ),
                     ),
@@ -120,8 +167,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             } else {
                               isInputUrlImage = true;
                             }
-                            print(isInputUrlImage);
                           });
+                        },
+                        onSaved: (value) {
+                          _imgUrl = value;
                         },
                       ),
                     ),
