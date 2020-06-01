@@ -27,16 +27,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
   // untuk validate dan simpan data dari form
   void _simpanForm() {
 
-    // untuk menyimpan form
-    _formKey.currentState.save();
+    // Deklarasikan ini agar validate berjalan
+    bool isValid = _formKey.currentState.validate();
+    if(isValid){
+      // untuk menyimpan form
+      _formKey.currentState.save();
 
-    _productData = Product(
-      id: null,
-      title: _title,
-      description: _description,
-      price: _price,
-      imageUrl: _imgUrl,
-    );
+      _productData = Product(
+        id: null,
+        title: _title,
+        description: _description,
+        price: _price,
+        imageUrl: _imgUrl,
+      );
+    }
 
     print(_productData.title);
     print(_productData.price);
@@ -99,6 +103,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   onSaved: (value) { 
                     _title = value;
                   },
+
+                  // gunakan validator untuk validasi. return null = true, return string = false
+                  validator: (value){
+                    if(value.isEmpty){
+                      return "Title Perlu Disi";
+                    }
+                    return null;
+                  },
                 ),
 
                 // untuk price (harga)
@@ -113,7 +125,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   },
                   // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                   onSaved: (value) {
-                    _price = double.parse(value);
+                    if(value.isEmpty){
+                      _price = 0;
+                    }else{
+                      _price = double.parse(value);
+                    }
+                  },
+
+                  validator: (value){
+                    if(value.isEmpty){
+                      return "Price perlu diisi.";
+                    }
+                    return null;
                   },
                 ),
 
@@ -126,6 +149,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                   onSaved: (value) {
                     _description = value;
+                  },
+
+                  validator: (value){
+                    if(value.isEmpty){
+                      return "Description Perlu diisi";
+                    }
+                    return null;
                   },
                 ),
 
@@ -176,9 +206,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             }
                           });
                         },
+                        
+
                         // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                         onSaved: (value) {
                           _imgUrl = value;
+                        },
+
+                        validator: (value){
+                          if(value.isEmpty){
+                            return "Image perlu diisi.";
+                          }
+                          return null;
                         },
                       ),
                     ),
