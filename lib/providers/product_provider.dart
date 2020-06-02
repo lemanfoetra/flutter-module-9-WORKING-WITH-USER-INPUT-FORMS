@@ -75,4 +75,10 @@ class ProductsProvider with ChangeNotifier {
   }
 
 
+  void deleteProduct(String id){
+    _items.removeWhere((data)=> data.id == id);
+    notifyListeners();
+  }
+
+
 }
