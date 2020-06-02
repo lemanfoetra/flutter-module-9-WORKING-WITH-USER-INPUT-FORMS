@@ -17,14 +17,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _focusNodeDescription = FocusNode();
   final _imgUrlController = TextEditingController();
 
-  String _title;
-  String _description;
-  double _price;
-  String _imgUrl;
+  String _productId;
+  String _title = '';
+  String _description = '';
+  String _price = '';
+  String _imgUrl = '';
+  bool _isFavorite = false;
 
   bool isInputUrlImage = false;
+  bool onFirstDipLoad = true;
   Product _productData;
 
+  // FUNCTION
   void _simpanForm(BuildContext scaffoldContext) {
     // Deklarasikan ini agar validate berjalan
     bool isValid = _formKey.currentState.validate();
@@ -33,29 +37,29 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _formKey.currentState.save();
 
       _productData = Product(
-        id: null,
+        id: _productId,
         title: _title,
         description: _description,
-        price: _price,
+        price: double.parse(_price),
         imageUrl: _imgUrl,
+        isFavorite: _isFavorite,
       );
 
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_productData);
+      // Add or Edit Product
+      if (_productId == null) {
+        Provider.of<ProductsProvider>(context, listen: false)
+            .addProduct(_productData);
+            _munculkanSnackBar(scaffoldContext, 'Product Added');
+      } else {
+        Provider.of<ProductsProvider>(context, listen: false)
+            .editProduct(_productId, _productData);
+            _munculkanSnackBar(scaffoldContext, 'Product Edited' );
+      }
 
-
-      Scaffold.of(scaffoldContext).showSnackBar(
-        SnackBar(
-          content: Text('Product Added'),
-          duration: Duration(
-            seconds: 3
-          ),
-        ),
-      );
-      //Navigator.of(context).pop();
     }
   }
 
+  // WIDGET
   // ketika melaod image
   Widget _onLoadImage(loadingProgress) {
     return Center(
@@ -64,6 +68,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ? loadingProgress.cumulativeBytesLoaded /
                 loadingProgress.expectedTotalBytes
             : null,
+      ),
+    );
+  }
+
+
+  // WIDGET
+  void _munculkanSnackBar(BuildContext context, String title) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(title),
+        duration: Duration(seconds: 3),
       ),
     );
   }
@@ -77,6 +92,28 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _imgUrlController.dispose();
 
     super.dispose();
+  }
+
+  // Difungsikan Ketika Update Product
+  @override
+  void didChangeDependencies() {
+    if (onFirstDipLoad) {
+      var productId = ModalRoute.of(context).settings.arguments as String;
+
+      if (productId != null) {
+        _productData =
+            Provider.of<ProductsProvider>(context).findById(productId);
+        _imgUrlController.text = _productData.imageUrl;
+        _title = _productData.title;
+        _description = _productData.description;
+        _price = _productData.price.toString();
+        _isFavorite = _productData.isFavorite;
+        _productId = _productData.id;
+      }
+    }
+
+    onFirstDipLoad = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -102,6 +139,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               children: <Widget>[
                 // untuk title
                 TextFormField(
+                  initialValue: _title,
                   decoration: InputDecoration(labelText: "Title"),
                   textInputAction: TextInputAction.next,
 
@@ -126,6 +164,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 // untuk price (harga)
                 TextFormField(
                   decoration: InputDecoration(labelText: "Price"),
+                  initialValue: _price,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType
                       .number, // Untuk meng set type Input keyboard
@@ -136,9 +175,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   // bisa gunakan onSaved() untuk menyimpan datanya ketika di submit
                   onSaved: (value) {
                     if (value.isEmpty) {
-                      _price = 0;
+                      _price = '';
                     } else {
-                      _price = double.parse(value);
+                      _price = value;
                     }
                   },
 
@@ -153,6 +192,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 // unutk deskripsi
                 TextFormField(
                   decoration: InputDecoration(labelText: "Description"),
+                  initialValue: _description,
                   keyboardType: TextInputType.multiline,
                   maxLines: 3, // berarti 3 baris
                   focusNode: _focusNodeDescription,

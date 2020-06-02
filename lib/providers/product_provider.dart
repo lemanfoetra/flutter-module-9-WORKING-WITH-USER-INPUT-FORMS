@@ -64,4 +64,15 @@ class ProductsProvider with ChangeNotifier {
   Product findById(String id) {
     return items.firstWhere((data) => data.id == id);
   }
+
+
+  void editProduct(String id, Product product){
+    if(id != null){
+      var index = _items.indexWhere((data) => data.id == id);
+      _items[index] = product;
+      notifyListeners();
+    }
+  }
+
+
 }
